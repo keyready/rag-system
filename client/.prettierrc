@@ -1,0 +1,31 @@
+{
+	"semi": true,
+	"singleQuote": true,
+	"trailingComma": "all",
+	"tabWidth": 4,
+	"useTabs": true,
+	"printWidth": 150,
+	"quoteProps": "consistent",
+	"bracketSpacing": true,
+	"bracketSameLine": false,
+	"arrowParens": "always",
+	"importOrder": [
+		"<TYPES>^(node:)",
+		"",
+		"<TYPES>",
+		"",
+		"<TYPES>^[.]",
+		"",
+		"<BUILTIN_MODULES>",
+		"",
+		"<THIRD_PARTY_MODULES>",
+		"",
+		"^types$",
+		"",
+		"^app/",
+		"",
+		"^[.]"
+	],
+	"importOrderCaseSensitive": false,
+	"plugins": ["@ianvs/prettier-plugin-sort-imports", "prettier-plugin-tailwindcss"]
+}
