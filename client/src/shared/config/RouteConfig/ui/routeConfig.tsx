@@ -9,7 +9,7 @@ import { AppRoutes } from '../types/routes.types';
 export const RoutePath: Record<AppRoutes, string> = {
 	[AppRoutes.LOGIN]: '/',
 	[AppRoutes.UPLOADFILES]: '/upload',
-	[AppRoutes.CHAT]: '/c',
+	[AppRoutes.CHAT]: '/c/',
 	[AppRoutes.WELCOMECHAT]: '/c',
 
 	[AppRoutes.NOT_FOUND]: '*',

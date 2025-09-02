@@ -25,15 +25,13 @@ export const ChatTextarea = ({ className }: ChatTextareaProps) => {
 
 	const [message, setMessage] = useState<string>('');
 	const [contextLength, setContextLength] = useState<number>(3);
-	const [_, setErrorDetails] = useState<string>('');
 
 	const isLLMThinking = useSelector(getIsLLMThinking);
 	const messages = useSelector(getMessages);
 
-	const { sendJsonMessage } = useWebSocketHandler<WSMessageStatus>({
+	const { sendJsonMessage, readyState } = useWebSocketHandler<WSMessageStatus>({
 		url: 'http://localhost:8000/ws/chat',
 		handlers: {
-			error: (msg) => setErrorDetails(msg.detail ?? 'Unknown error'),
 			chat_created: (msg) => navigate(RoutePath.chat + msg.chat_id),
 			stream: (msg) => {
 				dispatch(messagesActions.setIsLLMThinking(false));
@@ -63,6 +61,10 @@ export const ChatTextarea = ({ className }: ChatTextareaProps) => {
 			answer: () => dispatch(messagesActions.setStreamedMessage('')),
 		},
 	});
+
+	useEffect(() => {
+		if (readyState === 3) alert(`Не удается установить соединение с сервером`);
+	}, [readyState]);
 
 	const handleSendMessage = useCallback(async () => {
 		sendJsonMessage({

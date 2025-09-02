@@ -4,7 +4,6 @@ import type { Message } from '../types/Message';
 
 import { createSlice } from '@reduxjs/toolkit';
 
-import { fetchChatHistory } from '../service/fetchChatHistory';
 import { type MessagesSchema } from '../types/MessagesSchema';
 
 const initialState: MessagesSchema = {
@@ -35,21 +34,6 @@ export const messagesSlice = createSlice({
 				state.data.streamedMessage = action.payload;
 			}
 		},
-	},
-	extraReducers: (builder) => {
-		builder.addCase(fetchChatHistory.pending, (state) => {
-			state.isLoading = true;
-			state.error = undefined;
-		});
-		builder.addCase(fetchChatHistory.fulfilled, (state, action: PayloadAction<Message[]>) => {
-			state.data.messages = action.payload;
-			state.isLoading = false;
-			state.error = undefined;
-		});
-		builder.addCase(fetchChatHistory.rejected, (state) => {
-			state.isLoading = false;
-			state.error = 'Ошибка загрузки чата';
-		});
 	},
 });
 

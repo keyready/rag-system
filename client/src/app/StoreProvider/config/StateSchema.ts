@@ -10,6 +10,7 @@ export interface StateSchema {
 	contextMenu: ContextMenuSchema;
 	navigationGuard: NavigationGuardSchema;
 	[rtkApi.reducerPath]: ReturnType<typeof rtkApi.reducer>;
+
 	messages?: MessagesSchema;
 }
 

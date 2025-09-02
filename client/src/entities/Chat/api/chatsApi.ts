@@ -15,6 +15,11 @@ const fetchChatsApi = rtkApi.injectEndpoints({
 				params,
 			}),
 		}),
+		getChatsMessages: build.query<Chat[], void>({
+			query: () => ({
+				url: '/chats',
+			}),
+		}),
 	}),
 });
 
