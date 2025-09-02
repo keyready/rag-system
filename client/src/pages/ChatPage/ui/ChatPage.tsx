@@ -1,13 +1,14 @@
 import type { Message } from '@/entities/Message';
 
 import { ChatArea } from '@/comp/ChatArea';
-import { getMessages, messagedReducer, messagesActions } from '@/entities/Message';
+import { getMessages, messagesActions, messagesReducer } from '@/entities/Message';
 import { $api } from '@/shared/config/api/api';
 import { RoutePath } from '@/shared/config/RouteConfig';
 import { DynamicModuleLoader } from '@/shared/utils/DynamicModuleLoader';
 import { useAppDispatch } from '@/shared/utils/useAppDispatch';
 import { ChatTextarea } from '@/widgets/ChatTextarea';
 import { useFont } from '@/widgets/FontSwitcher';
+import { navigationBlockerActions } from '@/widgets/NavigationBlocker';
 import { WelcomeChatScreen } from '@/widgets/WelcomeChatScreen';
 import { cn, Spinner } from '@heroui/react';
 import { AnimatePresence } from 'framer-motion';
@@ -17,18 +18,26 @@ import { useNavigate, useParams } from 'react-router';
 
 export const ChatPage = () => {
 	const navigate = useNavigate();
+	const dispatch = useAppDispatch();
 	const { chat_id } = useParams<{ chat_id: string }>();
 
 	const [isChatLoading, setIsChatLoading] = useState<boolean>(false);
-	const [selectedFont, setSelectedFont] = useState<string>('Comfortaa');
+	const [selectedFont, setSelectedFont] = useState<string>('!font-[Comfortaa]');
 
 	const { font } = useFont();
-	const dispatch = useAppDispatch();
 	const messages = useSelector(getMessages);
 
 	useEffect(() => {
-		setSelectedFont('font-[' + font + ']');
+		setSelectedFont('!font-[' + font + ']');
 	}, [font]);
+
+	useEffect(() => {
+		dispatch(navigationBlockerActions.enableNavigationGuard('Если вы покинете страницу, текущий диалог будет завершен.'));
+
+		return () => {
+			dispatch(navigationBlockerActions.disableNavigationGuard());
+		};
+	}, []);
 
 	useEffect(() => {
 		const getChatHistory = async () => {
@@ -53,7 +62,7 @@ export const ChatPage = () => {
 	}, [chat_id, dispatch, navigate]);
 
 	return (
-		<DynamicModuleLoader reducers={{ messages: messagedReducer }}>
+		<DynamicModuleLoader reducers={{ messages: messagesReducer }}>
 			<div className={cn('relative flex w-full flex-col items-center justify-start gap-10', 'dark:bg-main dark:text-white', selectedFont)}>
 				<AnimatePresence mode="wait">
 					{isChatLoading ? (

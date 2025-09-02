@@ -2,10 +2,10 @@ import type { MouseEvent } from 'react';
 
 import type { Message } from '../model/types/Message';
 
-import { openMenu } from '@/app/store/contextMenuSlice';
 import { formatText } from '@/shared/utils/formatText';
 import { formatDateTime, formatTime } from '@/shared/utils/formatTime';
 import { useAppDispatch } from '@/shared/utils/useAppDispatch';
+import { contextMenuActions } from '@/widgets/ContextMenu';
 import { Accordion, AccordionItem, cn } from '@heroui/react';
 import { RiDeleteBin2Line, RiFileCopyLine, RiHistoryLine } from '@remixicon/react';
 import { motion } from 'framer-motion';
@@ -26,7 +26,7 @@ export const MessageBlock = (props: MessageBlockProps) => {
 	const handleContextMenu = (e: MouseEvent) => {
 		e.preventDefault();
 		dispatch(
-			openMenu({
+			contextMenuActions.openMenu({
 				x: e.clientX,
 				y: e.clientY,
 				items: [

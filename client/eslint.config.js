@@ -40,6 +40,7 @@ export default tseslint.config(
 			'no-bitwise': 'off',
 			'no-restricted-syntax': 'off',
 			'camelcase': 'off',
+			'@typescript-eslint/no-explicit-any': 'off',
 			'no-prototype-builtins': 'off',
 			'react/no-unescaped-entities': 'off',
 			'no-unsafe-optional-chaining': 'off',

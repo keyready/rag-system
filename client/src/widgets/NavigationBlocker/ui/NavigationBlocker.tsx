@@ -1,27 +1,27 @@
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useBlocker } from 'react-router';
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react';
 
-import type { StateSchema } from '@/app/store/StateSchema';
+import { getIsNavigationBlockerEnabled, getNavigationBlockerMessage } from '../model/selectors/NavigationBlockerSelectors';
 
 export const NavigationBlocker = () => {
-	const enabled = useSelector((state: StateSchema) => state.navigationGuard.enabled);
-	const message = useSelector((state: StateSchema) => state.navigationGuard.message);
+	const enabled = useSelector(getIsNavigationBlockerEnabled);
+	const message = useSelector(getNavigationBlockerMessage);
 
 	const blocker = useBlocker(({ currentLocation, nextLocation }) => {
 		if (!enabled) return false;
-		if (currentLocation.pathname === nextLocation.pathname) return false;
-		return true;
+		return currentLocation.pathname !== nextLocation.pathname;
 	});
 
 	useEffect(() => {
 		if (!enabled) return;
+
 		const handler = (e: BeforeUnloadEvent) => {
 			e.preventDefault();
-			e.returnValue = message || '';
 			return message || '';
 		};
+
 		window.addEventListener('beforeunload', handler);
 		return () => window.removeEventListener('beforeunload', handler);
 	}, [enabled, message]);
@@ -34,11 +34,15 @@ export const NavigationBlocker = () => {
 						<>
 							<ModalHeader className="flex flex-col gap-1">Подтвердите переход</ModalHeader>
 							<ModalBody>
-								<p>{message || 'Вы уверены, что хотите покинуть страницу?'}{blocker.location ? ` (${blocker.location.pathname})` : ''}</p>
+								<p>{message || 'Вы уверены, что хотите покинуть страницу?'}</p>
 							</ModalBody>
 							<ModalFooter>
-								<Button variant="light" onPress={() => blocker.reset?.()}>Остаться</Button>
-								<Button color="primary" onPress={() => blocker.proceed?.()}>Перейти</Button>
+								<Button className="w-1/3" color="success" variant="light" onPress={() => blocker.reset?.()}>
+									Остаться
+								</Button>
+								<Button className="w-1/3" color="danger" onPress={() => blocker.proceed?.()}>
+									Перейти
+								</Button>
 							</ModalFooter>
 						</>
 					)}
@@ -46,4 +50,4 @@ export const NavigationBlocker = () => {
 			</Modal>
 		</>
 	);
-}; 
+};

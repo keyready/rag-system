@@ -3,24 +3,26 @@ import type { ReducersMapObject } from '@reduxjs/toolkit';
 import type { StateSchema } from './StateSchema';
 
 import { $api } from '@/shared/config/api/api';
+import { rtkApi } from '@/shared/config/api/rtkApi';
+import { contextMenuReducer } from '@/widgets/ContextMenu';
+import { navigationBlockerReducer } from '@/widgets/NavigationBlocker';
 import { configureStore } from '@reduxjs/toolkit';
 
-import contextMenuReducer from '../../store/contextMenuSlice';
-import navigationGuardReducer from '../../store/navigationGuardSlice';
 import { createReducerManager } from './reducerManager';
+import type { ReduxStoreWithManager } from './StateSchema';
 
 export function CreateReduxStore(initialState?: StateSchema, lazyReducers?: ReducersMapObject<StateSchema>) {
 	const rootReducers: ReducersMapObject<StateSchema> = {
 		...lazyReducers,
 		contextMenu: contextMenuReducer,
-		navigationGuard: navigationGuardReducer,
+		navigationGuard: navigationBlockerReducer,
+		[rtkApi.reducerPath]: rtkApi.reducer,
 	};
 
 	const reducerManager = createReducerManager(rootReducers);
 
 	const store = configureStore({
-		// @ts-expect-error лень с типами возиться
-		reducer: reducerManager.reduce as ReducersMapObject<StateSchema>,
+		reducer: reducerManager.reduce,
 		devTools: true,
 		preloadedState: initialState,
 		middleware: (getDefaultMiddleware) =>
@@ -30,11 +32,10 @@ export function CreateReduxStore(initialState?: StateSchema, lazyReducers?: Redu
 						api: $api,
 					},
 				},
-			}) /* .concat(rtkApi.middleware) */,
+			}).concat(rtkApi.middleware),
 	});
 
-	// @ts-expect-error тут тоже что-то не работает
-	store.reducerManager = reducerManager;
+	(store as unknown as ReduxStoreWithManager).reducerManager = reducerManager;
 
 	return store;
 }

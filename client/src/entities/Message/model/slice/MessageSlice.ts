@@ -53,4 +53,4 @@ export const messagesSlice = createSlice({
 	},
 });
 
-export const { reducer: messagedReducer, actions: messagesActions } = messagesSlice;
+export const { reducer: messagesReducer, actions: messagesActions } = messagesSlice;

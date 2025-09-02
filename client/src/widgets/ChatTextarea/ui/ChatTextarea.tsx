@@ -1,7 +1,6 @@
 import type { MessageAuthorType, WSMessageStatus } from '@/entities/Message';
 import type { SendMessageHotkeyTypes } from '@/widgets/SendMessageHotkey';
 
-import { disableNavigationGuard, enableNavigationGuard } from '@/app/store/navigationGuardSlice';
 import { getIsLLMThinking, getMessages, messagesActions } from '@/entities/Message';
 import { RoutePath } from '@/shared/config/RouteConfig';
 import { SEND_MESSAGE_HOTKEY } from '@/shared/consts';
@@ -30,14 +29,6 @@ export const ChatTextarea = ({ className }: ChatTextareaProps) => {
 
 	const isLLMThinking = useSelector(getIsLLMThinking);
 	const messages = useSelector(getMessages);
-
-	useEffect(() => {
-		dispatch(enableNavigationGuard('Если вы покинете страницу, текущий диалог будет завершен.'));
-
-		return () => {
-			dispatch(disableNavigationGuard());
-		};
-	}, []);
 
 	const { sendJsonMessage } = useWebSocketHandler<WSMessageStatus>({
 		url: 'http://localhost:8000/ws/chat',
@@ -90,54 +81,6 @@ export const ChatTextarea = ({ className }: ChatTextareaProps) => {
 		dispatch(messagesActions.setMessages(newMessages));
 		setMessage('');
 	}, [message, contextLength, dispatch, chat_id, messages]);
-
-	// useEffect(() => {
-	// 	switch (lastJsonMessage?.status) {
-	// 		case 'error':
-	// 			setErrorDetails(lastJsonMessage.detail);
-	// 			break;
-	// 		case 'chat_created':
-	// 			navigate(RoutePath.chat + lastJsonMessage.chat_id, { replace: false });
-	// 			break;
-	// 		case 'processing':
-	// 			break;
-	// 		case 'stream': {
-	// 			const chunk = lastJsonMessage.chunk;
-	// 			dispatch(setIsLLMThinking(false));
-	// 			dispatch(setStreamedMessage((prevStreamed) => {
-	// 				const updated = prevStreamed + chunk;
-	//
-	// 				dispatch(setMessages((prevMessages) => {
-	// 					const last = prevMessages.at(-1);
-	//
-	// 					if (last?.author === 'assistant') {
-	// 						const updatedMessages = [...prevMessages];
-	// 						updatedMessages[updatedMessages.length - 1] = {
-	// 							...last,
-	// 							body: updated,
-	// 						};
-	// 						return updatedMessages;
-	// 					} else {
-	// 						return [
-	// 							...prevMessages,
-	// 							{
-	// 								author: 'assistant',
-	// 								createdAt: new Date(),
-	// 								body: chunk,
-	// 							},
-	// 						];
-	// 					}
-	// 				});
-	//
-	// 				return updated;
-	// 			});
-	// 			break;
-	// 		}
-	// 		case 'answer':
-	// 			dispatch(setStreamedMessage(''));
-	// 			break;
-	// 	}
-	// }, [lastJsonMessage, dispatch, setIsLLMThinking]);
 
 	useEffect(() => {
 		const handleEnterClick = (event: KeyboardEvent) => {

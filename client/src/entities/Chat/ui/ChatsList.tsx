@@ -1,22 +1,23 @@
-import type { Chat } from '../model/types/ChatsList';
-
 import { SelectChatButton } from '@/entities/Chat';
-import { $api } from '@/shared/config/api/api';
-import { useEffect, useState } from 'react';
+import { Spinner } from '@heroui/react';
+
+import { useChatsList } from '../api/chatsApi';
 
 export const ChatsList = () => {
-	const [chatsList, setChatsList] = useState<Chat[]>([]);
+	const { data: chatsList, isLoading } = useChatsList();
 
-	useEffect(() => {
-		const loadChatsHistory = async () => {
-			const { data } = await $api.get<{ chats: Chat[] }>('/chats');
-			return data.chats;
-		};
+	if (isLoading) {
+		return (
+			<div className="flex flex-col gap-2 overflow-y-auto">
+				<p className="text-start text-sm">Диалоги</p>
+				<div className="flex items-center justify-center">
+					<Spinner />
+				</div>
+			</div>
+		);
+	}
 
-		loadChatsHistory().then((res) => setChatsList(res));
-	}, []);
-
-	if (!chatsList.length)
+	if (!chatsList?.length)
 		return (
 			<div className="flex flex-col gap-2 overflow-y-auto">
 				<p className="text-start text-sm">Диалоги</p>

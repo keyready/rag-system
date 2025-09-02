@@ -1,8 +1,8 @@
 import { RoutePath } from '@/shared/config/RouteConfig';
+import { NavigationBlocker } from '@/widgets/NavigationBlocker';
 import { Sidebar } from '@/widgets/Sidebar';
 import { useTheme } from '@heroui/use-theme';
 import { Navigate, Outlet, useLocation } from 'react-router';
-import { NavigationBlocker } from '@/app/AppRouter/ui/NavigationBlocker';
 
 export function App() {
 	const isAuth = true;

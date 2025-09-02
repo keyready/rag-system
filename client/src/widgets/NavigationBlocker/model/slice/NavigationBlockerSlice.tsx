@@ -1,19 +1,16 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 
+import type { NavigationGuardSchema } from '../types/NavigationBlocker';
+
 import { createSlice } from '@reduxjs/toolkit';
 
-interface NavigationGuardState {
-	enabled: boolean;
-	message: string;
-}
-
-const initialState: NavigationGuardState = {
+const initialState: NavigationGuardSchema = {
 	enabled: false,
 	message: '',
 };
 
 export const navigationGuardSlice = createSlice({
-	name: 'navigationGuard',
+	name: 'NavigationBlocker',
 	initialState,
 	reducers: {
 		enableNavigationGuard: (state, action: PayloadAction<string>) => {
@@ -27,5 +24,4 @@ export const navigationGuardSlice = createSlice({
 	},
 });
 
-export const { enableNavigationGuard, disableNavigationGuard } = navigationGuardSlice.actions;
-export default navigationGuardSlice.reducer;
+export const { reducer: navigationBlockerReducer, actions: navigationBlockerActions } = navigationGuardSlice;
