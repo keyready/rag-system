@@ -1,0 +1,15 @@
+[server.http]
+address = "0.0.0.0:1337"
+
+[server.http.logger]
+address = "loki:3100"
+enable_loki = true
+level = "info"
+
+[cloud.s3]
+address = ""
+access_id = ""
+secret_key = ""
+enable_ssl = false
+token = ""
+watches_dir = ""
