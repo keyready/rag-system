@@ -1,66 +1,69 @@
 import { ChatArea } from '@/comp/ChatArea';
-import { getIsLLMThinking, messagesReducer, useChatMessages } from '@/entities/Message';
+import { useMessagesWithWebSocket } from '@/entities/Message';
 import { RoutePath } from '@/shared/config/RouteConfig';
-import { DynamicModuleLoader } from '@/shared/utils/DynamicModuleLoader';
 import { useAppDispatch } from '@/shared/utils/useAppDispatch';
 import { ChatTextarea } from '@/widgets/ChatTextarea';
 import { navigationBlockerActions } from '@/widgets/NavigationBlocker';
+import { Page } from '@/widgets/Page';
 import { WelcomeChatScreen } from '@/widgets/WelcomeChatScreen';
-import { cn, Spinner } from '@heroui/react';
+import { Spinner } from '@heroui/react';
 import { AnimatePresence } from 'framer-motion';
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { toast } from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router';
 
 export const ChatPage = () => {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 
-	const isLLMThinking = useSelector(getIsLLMThinking);
-
 	const { chat_id } = useParams<{ chat_id: string }>();
-	const {
-		data: messages,
-		isLoading,
-		isError,
-	} = useChatMessages(chat_id, {
-		skip: !chat_id,
+
+	const { messages, isLoading, isError, isLLMThinking, sendMessage, readyState } = useMessagesWithWebSocket({
+		chatId: chat_id,
+		onError: (error) => {
+			toast(`WebSocket error: ${error}`);
+		},
 	});
+
+	useEffect(() => {
+		if (!chat_id) navigate(RoutePath.welcome_chat);
+	}, [chat_id, navigate]);
 
 	useEffect(() => {
 		if (isError) {
 			navigate(RoutePath.welcome_chat);
 		}
-	}, [isError, navigate, dispatch]);
+	}, [isError, navigate]);
 
 	useEffect(() => {
-		if (isLLMThinking) {
+		if (messages?.length) {
 			dispatch(
 				navigationBlockerActions.enableNavigationGuard(
 					'Если вы покинете страницу, чат-бот перестанет генерировать ответ на Ваш вопрос. Диалог будет сохранен',
 				),
 			);
+		} else {
+			dispatch(navigationBlockerActions.disableNavigationGuard());
 		}
+
 		return () => {
 			dispatch(navigationBlockerActions.disableNavigationGuard());
 		};
-	}, []);
+	}, [dispatch, messages?.length]);
 
 	return (
-		<DynamicModuleLoader reducers={{ messages: messagesReducer }}>
-			<div className={cn('relative flex w-full flex-col items-center justify-start gap-10', 'dark:bg-main dark:text-white')}>
-				<AnimatePresence mode="wait">
-					{!isLoading && chat_id && messages?.length && <ChatArea />}
-					{!isLoading && (isError || !messages?.length) && <WelcomeChatScreen />}
-					{isLoading && chat_id && (
-						<div className="flex h-6/8 w-3/4 flex-col items-center justify-center gap-3">
-							<Spinner size="lg" />
-							<h2 className="text-2xl font-bold">Загрузка чата...</h2>
-						</div>
-					)}
-				</AnimatePresence>
-				<ChatTextarea className="absolute bottom-0 w-3/4" />
-			</div>
-		</DynamicModuleLoader>
+		<Page>
+			<AnimatePresence mode="wait">
+				{!isLoading && messages?.length && <ChatArea messages={messages} isLLMThinking={isLLMThinking} />}
+				{!isLoading && (isError || !messages?.length) && <WelcomeChatScreen />}
+				{isLoading && (
+					<div className="flex h-6/8 w-3/4 flex-col items-center justify-center gap-3">
+						<Spinner size="lg" />
+						<h2 className="text-2xl font-bold">Загрузка чата...</h2>
+					</div>
+				)}
+			</AnimatePresence>
+			<ChatTextarea className="absolute bottom-0 w-3/4" sendMessage={sendMessage} isLLMThinking={isLLMThinking} readyState={readyState} />
+		</Page>
 	);
 };

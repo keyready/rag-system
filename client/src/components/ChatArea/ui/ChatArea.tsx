@@ -1,13 +1,17 @@
-import { getIsLLMThinking, getMessages, MessageBlock } from '@/entities/Message';
+import type { Message } from '@/entities/Message';
+
+import { MessageBlock } from '@/entities/Message';
 import { TypingLoader } from '@/shared/ui/TypingLoader';
 import { ScrollShadow } from '@heroui/react';
 import { motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 
-export const ChatArea = () => {
-	const messages = useSelector(getMessages);
-	const isLLMThinking = useSelector(getIsLLMThinking);
+interface ChatAreaProps {
+	messages: Message[];
+	isLLMThinking: boolean;
+}
+
+export const ChatArea = ({ messages, isLLMThinking }: ChatAreaProps) => {
 
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -51,7 +55,7 @@ export const ChatArea = () => {
 			transition={{ duration: 0.5 }}
 			className="flex h-7/8 w-9/10 flex-col items-center justify-center"
 		>
-			<div className="relative h-7/8">
+			<div className="relative h-7/8 w-full">
 				<ScrollShadow
 					ref={scrollContainerRef}
 					id="chat-container"

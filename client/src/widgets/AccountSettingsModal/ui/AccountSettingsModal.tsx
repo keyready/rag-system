@@ -1,3 +1,4 @@
+import { NameChange, PasswordChange } from '@/entities/User';
 import { FontSwitcher } from '@/widgets/FontSwitcher';
 import { SendMessageHotkey } from '@/widgets/SendMessageHotkey';
 import { ThemeSwitcher } from '@/widgets/ThemeSwitcher';
@@ -14,7 +15,7 @@ export const AccountSettingsModal = ({ isOpen, setIsOpen }: { isOpen: boolean; s
 			isOpen={isOpen}
 			onClose={() => setIsOpen(false)}
 		>
-			<ModalContent>
+			<ModalContent className="overflow-x-hidden">
 				<ModalHeader className="mb-5 border-b-2 border-b-gray-400">
 					<h1>Настройки</h1>
 				</ModalHeader>
@@ -33,7 +34,10 @@ export const AccountSettingsModal = ({ isOpen, setIsOpen }: { isOpen: boolean; s
 							</div>
 						</Tab>
 						<Tab className="w-full" title="Аккаунт">
-							тут настроки аккаунта
+							<div className="flex flex-col gap-4">
+								<NameChange />
+								<PasswordChange />
+							</div>
 						</Tab>
 						<Tab className="w-full" title="О программе">
 							<p className="indent-4">

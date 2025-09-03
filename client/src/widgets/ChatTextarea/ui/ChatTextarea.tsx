@@ -1,88 +1,33 @@
-import type { MessageAuthorType, WSMessageStatus } from '@/entities/Message';
 import type { SendMessageHotkeyTypes } from '@/widgets/SendMessageHotkey';
 
-import { getIsLLMThinking, getMessages, messagesActions } from '@/entities/Message';
-import { RoutePath } from '@/shared/config/RouteConfig';
 import { SEND_MESSAGE_HOTKEY } from '@/shared/consts';
-import { useAppDispatch } from '@/shared/utils/useAppDispatch';
-import { useWebSocketHandler } from '@/shared/utils/useWebSocketHandler';
 import { Button, cn, Popover, PopoverContent, PopoverTrigger, Slider, Textarea } from '@heroui/react';
 import { RiErrorWarningLine, RiSendPlaneLine, RiSettings4Line } from '@remixicon/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router';
+import { toast } from 'react-hot-toast';
 
 interface ChatTextareaProps {
 	className?: string;
+	sendMessage: (message: string, contextLength?: number) => void;
+	isLLMThinking: boolean;
+	readyState: number;
 }
 
-export const ChatTextarea = ({ className }: ChatTextareaProps) => {
-	const dispatch = useAppDispatch();
-
-	const navigate = useNavigate();
-	const { chat_id } = useParams<{ chat_id: string }>();
-
+export const ChatTextarea = ({ className, sendMessage, isLLMThinking, readyState }: ChatTextareaProps) => {
 	const [message, setMessage] = useState<string>('');
 	const [contextLength, setContextLength] = useState<number>(3);
 
-	const isLLMThinking = useSelector(getIsLLMThinking);
-	const messages = useSelector(getMessages);
-
-	const { sendJsonMessage, readyState } = useWebSocketHandler<WSMessageStatus>({
-		url: 'http://localhost:8000/ws/chat',
-		handlers: {
-			chat_created: (msg) => navigate(RoutePath.chat + msg.chat_id),
-			stream: (msg) => {
-				dispatch(messagesActions.setIsLLMThinking(false));
-				const chunk = msg.chunk ?? '';
-				dispatch(
-					messagesActions.setStreamedMessage((prev) => {
-						const updated = prev + chunk;
-						const last = messages.at(-1);
-						let newMessages;
-						if (last?.author === 'assistant') {
-							newMessages = [...messages.slice(0, -1), { ...last, body: updated }];
-						} else {
-							newMessages = [
-								...messages,
-								{
-									author: 'assistant' as MessageAuthorType,
-									createdAt: new Date(),
-									body: updated,
-								},
-							];
-						}
-						dispatch(messagesActions.setMessages(newMessages));
-						return updated;
-					}),
-				);
-			},
-			answer: () => dispatch(messagesActions.setStreamedMessage('')),
-		},
-	});
-
 	useEffect(() => {
-		if (readyState === 3) alert(`Не удается установить соединение с сервером`);
+		if (readyState === 3) toast(`Не удается установить соединение с сервером`);
 	}, [readyState]);
 
-	const handleSendMessage = useCallback(async () => {
-		sendJsonMessage({
-			message,
-			...(chat_id ? { chat_id } : {}),
-		});
-		dispatch(messagesActions.setIsLLMThinking(true));
-		const newMessages = [
-			...messages,
-			{
-				author: 'user' as MessageAuthorType,
-				createdAt: new Date(),
-				body: message.trimEnd(),
-			},
-		];
-		dispatch(messagesActions.setMessages(newMessages));
+	const handleSendMessage = useCallback(() => {
+		if (!message.trim()) return;
+
+		sendMessage(message, contextLength);
 		setMessage('');
-	}, [message, contextLength, dispatch, chat_id, messages]);
+	}, [message, contextLength, sendMessage]);
 
 	useEffect(() => {
 		const handleEnterClick = (event: KeyboardEvent) => {
@@ -109,6 +54,7 @@ export const ChatTextarea = ({ className }: ChatTextareaProps) => {
 	return (
 		<div className={cn(className, 'p-4')}>
 			<Textarea
+				autoFocus
 				value={message}
 				onChange={(ev) => setMessage(ev.target.value)}
 				label="Что искать сегодня?"

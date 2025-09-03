@@ -2,14 +2,18 @@ import type { Message } from '../model/types/Message';
 
 import { rtkApi } from '@/shared/config/api/rtkApi';
 
-const fetchChatMessagesApi = rtkApi.injectEndpoints({
+const messagesApi = rtkApi.injectEndpoints({
 	endpoints: (build) => ({
-		getChatsMessages: build.query<Message[], string | undefined>({
+		getChatMessages: build.query<Message[], string>({
 			query: (chatId) => ({
 				url: `/chats/${chatId}`,
 			}),
+			providesTags: (_, __, chatId) => [
+				{ type: 'Messages', id: chatId },
+				{ type: 'Messages', id: 'LIST' },
+			],
 		}),
 	}),
 });
 
-export const useChatMessages = fetchChatMessagesApi.useGetChatsMessagesQuery;
+export const useChatMessages = messagesApi.useGetChatMessagesQuery;

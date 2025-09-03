@@ -1,5 +1,4 @@
-import type { MessagesSchema } from '@/entities/Message';
-import type { ContextMenuSchema } from '@/widgets/ContextMenu';
+import type { UserSchema } from '@/entities/User';
 import type { NavigationGuardSchema } from '@/widgets/NavigationBlocker';
 import type { EnhancedStore, Reducer, ReducersMapObject, UnknownAction } from '@reduxjs/toolkit';
 import type { AxiosInstance } from 'axios';
@@ -7,11 +6,10 @@ import type { AxiosInstance } from 'axios';
 import { rtkApi } from '@/shared/config/api/rtkApi';
 
 export interface StateSchema {
-	contextMenu: ContextMenuSchema;
 	navigationGuard: NavigationGuardSchema;
-	[rtkApi.reducerPath]: ReturnType<typeof rtkApi.reducer>;
+	user: UserSchema;
 
-	messages?: MessagesSchema;
+	[rtkApi.reducerPath]: ReturnType<typeof rtkApi.reducer>;
 }
 
 export type StateSchemaKey = keyof StateSchema;

@@ -38,7 +38,7 @@ export const ChatsList = () => {
 		<div className="flex flex-col gap-2 overflow-y-auto">
 			<p className="text-start text-sm">Диалоги</p>
 			{chatsList.map((chat) => (
-				<SelectChatButton chat={chat} />
+				<SelectChatButton key={chat.chat_id} chat={chat} />
 			))}
 		</div>
 	);

@@ -13,7 +13,7 @@ export const $api = axios.create({
 
 const refreshToken = async () => {
 	try {
-		const response = await axios.post<AuthTokens>('https://api.example.com/auth/refresh ', {
+		const response = await axios.post<AuthTokens>('http://localhost:8000/auth/refresh', {
 			refreshToken: getRefreshToken(),
 		});
 		const { token, refreshToken } = response.data;
@@ -49,7 +49,7 @@ $api.interceptors.response.use(
 	async (error) => {
 		const originalRequest = error.config;
 
-		if (error.response && error.response.status === 403 && !originalRequest._retry) {
+		if (error.response && error.response.status === 401 && !originalRequest._retry) {
 			originalRequest._retry = true;
 
 			try {

@@ -1,21 +1,21 @@
 import type { ReducersMapObject } from '@reduxjs/toolkit';
 
-import type { StateSchema } from './StateSchema';
+import type { ReduxStoreWithManager, StateSchema } from './StateSchema';
 
+import { userReducer } from '@/entities/User';
 import { $api } from '@/shared/config/api/api';
 import { rtkApi } from '@/shared/config/api/rtkApi';
-import { contextMenuReducer } from '@/widgets/ContextMenu';
 import { navigationBlockerReducer } from '@/widgets/NavigationBlocker';
 import { configureStore } from '@reduxjs/toolkit';
 
 import { createReducerManager } from './reducerManager';
-import type { ReduxStoreWithManager } from './StateSchema';
 
 export function CreateReduxStore(initialState?: StateSchema, lazyReducers?: ReducersMapObject<StateSchema>) {
 	const rootReducers: ReducersMapObject<StateSchema> = {
 		...lazyReducers,
-		contextMenu: contextMenuReducer,
 		navigationGuard: navigationBlockerReducer,
+		user: userReducer,
+
 		[rtkApi.reducerPath]: rtkApi.reducer,
 	};
 

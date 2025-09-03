@@ -4,6 +4,7 @@ import { Button, Card, CardBody, CardHeader, Input } from '@heroui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useCallback } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
 
 import { LoginSchema } from '../types/loginForm.types';
 
@@ -17,7 +18,7 @@ export const LoginCard = () => {
 	});
 
 	const handleFormSubmit = useCallback((data: LoginFormSchema) => {
-		alert(JSON.stringify(data));
+		toast.success(JSON.stringify(data));
 	}, []);
 
 	return (
