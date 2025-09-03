@@ -58,12 +58,11 @@ export const userSlice = createSlice({
 				state.isSessionChecking = false;
 				if (action.payload) {
 					state.data = action.payload;
-				} else {
-					toast.error('Не смогли вас узнать. Повторите вход');
 				}
 			})
 			.addCase(initUserSession.rejected, (state) => {
 				state.isSessionChecking = false;
+				toast.error('Не смогли вас узнать. Повторите вход');
 			})
 			.addCase(authUser.pending, (state) => {
 				state.isAuthProcessing = true;

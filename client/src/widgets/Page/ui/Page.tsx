@@ -1,9 +1,12 @@
 import { cn } from '@heroui/react';
-import { type ReactNode } from 'react';
+import { type CSSProperties, type ReactNode } from 'react';
 
-export const Page = ({ children }: { children: ReactNode }) => {
+export const Page = ({ children, style, className }: { children: ReactNode; style?: CSSProperties; className?: string }) => {
 	return (
-		<section className={cn('relative flex h-screen w-full flex-col items-center justify-start gap-10', 'dark:bg-main dark:text-white')}>
+		<section
+			className={cn(className, 'relative flex h-screen w-full flex-col items-center gap-10', 'dark:bg-main dark:text-white')}
+			style={style}
+		>
 			{children}
 		</section>
 	);

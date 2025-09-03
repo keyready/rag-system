@@ -14,15 +14,14 @@ export const initUserSession = createAsyncThunk<User | undefined, void, ThunkCon
 		}
 
 		return await new Promise<User | undefined>((resolve) =>
-			setTimeout(
-				() =>
-					resolve({
-						id: '12u3hui1njk-nj123-12nj3km12lk3m-ui3jkql',
-						username: 'keyready',
-						name: 'Родион',
-					}),
-				1000,
-			),
+			setTimeout(() => {
+				resolve({
+					id: '12u3hui1njk-nj123-12nj3km12lk3m-ui3jkql',
+					username: 'keyready',
+					name: 'Родион',
+				});
+				// reject();
+			}, 1000),
 		);
 	} catch (e) {
 		return rejectWithValue('session_init_error');

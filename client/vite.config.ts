@@ -8,6 +8,8 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig({
 	plugins: [svgr(), react(), tailwindcss(), tsconfigPaths({ loose: true })],
 	server: {
-		port: 3000,
+		host: true,
+		port: 80,
+		allowedHosts: ['rag-chat.vka'],
 	},
 });

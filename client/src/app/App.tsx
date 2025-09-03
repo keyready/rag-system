@@ -5,7 +5,7 @@ import { useAppDispatch } from '@/shared/utils/useAppDispatch';
 import { NavigationBlocker } from '@/widgets/NavigationBlocker';
 import { Sidebar } from '@/widgets/Sidebar';
 import { useTheme } from '@heroui/use-theme';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { Navigate, Outlet, useLocation } from 'react-router';
@@ -15,10 +15,13 @@ export function App() {
 	const isAuth = Boolean(useSelector(getUserData)?.id);
 	const isSessionChecking = useSelector(getIsSessionChecking);
 	const location = useLocation();
+	const ranRef = useRef(false);
 
 	const { theme: _theme } = useTheme();
 
 	useEffect(() => {
+		if (ranRef.current) return;
+		ranRef.current = true;
 		dispatch(initUserSession());
 	}, []);
 

@@ -16,6 +16,17 @@ export const NameChange = () => {
 		setModifiedUserName(val);
 	}, []);
 
+	const handleInputKeyDown = useCallback(
+		(e: React.KeyboardEvent<HTMLInputElement>) => {
+			if (e.key === 'Escape') {
+				setModifiedUserName(userName || '');
+				e.preventDefault();
+				e.stopPropagation();
+			}
+		},
+		[userName],
+	);
+
 	const shouldSaveButtonBeRendered = useMemo(() => {
 		return userName !== modifiedUserName && modifiedUserName;
 	}, [userName, modifiedUserName]);
@@ -30,6 +41,7 @@ export const NameChange = () => {
 			<div className="col-span-5 flex w-full flex-col">
 				<Input
 					onValueChange={handleChangeUserName}
+					onKeyDown={handleInputKeyDown}
 					value={modifiedUserName}
 					size="sm"
 					endContent={
