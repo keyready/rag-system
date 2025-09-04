@@ -3,8 +3,18 @@ import type { ChangeEvent, FormEvent } from 'react';
 import type { ChatSearchParams, SearchModes } from '../model/types/ChatsList';
 
 import { $api } from '@/shared/config/api/api';
+import { TooltipButton } from '@/shared/ui/TooltipButton';
 import { useHotkeys } from '@/shared/utils/useHotkeys';
-import { Button, cn, Input, Modal, ModalBody, ModalContent, ModalHeader, Radio, RadioGroup } from '@heroui/react';
+import {
+	Button,
+	Input,
+	Modal,
+	ModalBody,
+	ModalContent,
+	ModalHeader,
+	Radio,
+	RadioGroup,
+} from '@heroui/react';
 import { RiSearchLine } from '@remixicon/react';
 import { useCallback, useState } from 'react';
 
@@ -49,20 +59,15 @@ export const ChatSearch = () => {
 
 	return (
 		<>
-			<Button
+			<TooltipButton
+				tooltips={<p className="text-[10px] opacity-20">Ctrl+Shift+F</p>}
 				onPress={handleOpenModalPress}
-				className={cn(
-					'flex items-center justify-between bg-transparent duration-100',
-					'hover:dark:bg-msg-surface hover:bg-gray-300 dark:text-white',
-				)}
-				size="sm"
 			>
 				<div className="justidy-start flex items-center gap-2">
 					<RiSearchLine size={14} />
 					<p>Поиск по чатам</p>
 				</div>
-				<p className="dark:text-sidebar text-gray-200 hover:text-white/80">Ctrl+Shift+F</p>
-			</Button>
+			</TooltipButton>
 
 			<Modal
 				classNames={{
@@ -76,8 +81,17 @@ export const ChatSearch = () => {
 					<ModalHeader>Поиск по чатам</ModalHeader>
 					<ModalBody>
 						<form onSubmit={handleSearchSubmit} className="flex flex-col gap-3">
-							<Input value={searchParams?.search} onChange={handleSearchChange} size="sm" label="Введите строку для поиска" />
-							<RadioGroup defaultValue="machine" value={searchParams?.mode} onChange={handleModeChange}>
+							<Input
+								value={searchParams?.search}
+								onChange={handleSearchChange}
+								size="sm"
+								label="Введите строку для поиска"
+							/>
+							<RadioGroup
+								defaultValue="machine"
+								value={searchParams?.mode}
+								onChange={handleModeChange}
+							>
 								<Radio value="machine">Искать по совпадению</Radio>
 								<Radio value="ai">Искать с помощью AI</Radio>
 							</RadioGroup>

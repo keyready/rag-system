@@ -21,7 +21,9 @@ export const ChatsList = () => {
 		return (
 			<div className="flex flex-col gap-2 overflow-y-auto">
 				<p className="text-start text-sm">Диалоги</p>
-				<p className="text-italic text-danger w-full text-left text-xs">Произошла ошибка во время получения списка диалогов</p>
+				<p className="text-italic text-danger w-full text-left text-xs">
+					Произошла ошибка во время получения списка диалогов
+				</p>
 			</div>
 		);
 	}

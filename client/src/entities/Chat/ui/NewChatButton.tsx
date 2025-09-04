@@ -1,6 +1,6 @@
 import { RoutePath } from '@/shared/config/RouteConfig';
+import { TooltipButton } from '@/shared/ui/TooltipButton';
 import { useHotkeys } from '@/shared/utils/useHotkeys';
-import { Button, cn } from '@heroui/react';
 import { RiPencilLine } from '@remixicon/react';
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router';
@@ -15,19 +15,14 @@ export const NewChatButton = () => {
 	useHotkeys(['control', 'shift', 'o'], handleNewChatPress);
 
 	return (
-		<Button
+		<TooltipButton
+			tooltips={<p className="text-[10px] opacity-20">Ctrl+Shift+O</p>}
 			onPress={handleNewChatPress}
-			className={cn(
-				'flex items-center justify-between bg-transparent duration-100',
-				'hover:dark:bg-msg-surface hover:bg-gray-300 dark:text-white',
-			)}
-			size="sm"
 		>
 			<div className="justidy-start flex items-center gap-2">
 				<RiPencilLine size={14} />
 				<p>Новый чат</p>
 			</div>
-			<p className="dark:text-sidebar text-gray-200 hover:text-white/80">Ctrl+Shift+O</p>
-		</Button>
+		</TooltipButton>
 	);
 };

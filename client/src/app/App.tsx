@@ -34,7 +34,7 @@ export function App() {
 		<div className="relative flex h-screen font-[Comfortaa] transition-[background-color] duration-200 dark:bg-gray-700 dark:text-white">
 			{(isAuth || isSessionChecking) && location.pathname !== RoutePath.login && <Sidebar />}
 			<NavigationBlocker />
-			<Toaster />
+			<Toaster position="top-left" />
 			<Outlet />
 			<AuthorizationLoader />
 		</div>
