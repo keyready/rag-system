@@ -11,8 +11,8 @@ interface ChatAreaProps {
 	isLLMThinking: boolean;
 }
 
+/** @deprecated use import from entity section instead */
 export const ChatArea = ({ messages, isLLMThinking }: ChatAreaProps) => {
-
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
 
 	const [_showScrollButton, setShowScrollButton] = useState(false);

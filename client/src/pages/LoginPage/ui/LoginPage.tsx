@@ -1,4 +1,4 @@
-import { LoginCard } from '@/comp/LoginCard';
+import { LoginCard } from '@/features/LoginUserCard';
 import { Page } from '@/widgets/Page';
 
 export const LoginPage = () => {

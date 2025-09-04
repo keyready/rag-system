@@ -3,6 +3,7 @@ import type { ChangeEvent, DragEvent } from 'react';
 import { Button, cn } from '@heroui/react';
 import { useCallback, useState } from 'react';
 
+/** @deprecated use import from features section instead */
 export const UploadFile = () => {
 	const [files, setFiles] = useState<File[]>([]);
 	const [isHovered, setIsHovered] = useState<boolean>(false);

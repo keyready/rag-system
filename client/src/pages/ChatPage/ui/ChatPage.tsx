@@ -1,11 +1,11 @@
 import { ChatArea } from '@/comp/ChatArea';
+import { WelcomeChatScreen } from '@/entities/Chat';
 import { useMessagesWithWebSocket } from '@/entities/Message';
 import { RoutePath } from '@/shared/config/RouteConfig';
 import { useAppDispatch } from '@/shared/utils/useAppDispatch';
 import { ChatTextarea } from '@/widgets/ChatTextarea';
 import { navigationBlockerActions } from '@/widgets/NavigationBlocker';
 import { Page } from '@/widgets/Page';
-import { WelcomeChatScreen } from '@/widgets/WelcomeChatScreen';
 import { Spinner } from '@heroui/react';
 import { AnimatePresence } from 'framer-motion';
 import { useEffect } from 'react';

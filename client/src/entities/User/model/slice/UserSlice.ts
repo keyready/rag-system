@@ -108,6 +108,10 @@ export const userSlice = createSlice({
 				state.data = undefined;
 				toast.success('До скорых встреч!');
 			})
+			.addCase(logoutUser.rejected, (state) => {
+				state.data = undefined;
+				toast.success('До скорых встреч!');
+			})
 
 			.addCase(fetchUserData.pending, (state) => {
 				state.isLoading = true;

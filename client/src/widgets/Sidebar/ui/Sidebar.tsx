@@ -1,5 +1,5 @@
 import { ChatSearch, ChatsList, NewChatButton } from '@/entities/Chat';
-import { AccountBar } from '@/widgets/AccountBar';
+import { AccountBar } from '@/entities/User';
 import { UploadFilesButton } from '@/widgets/UploadFilesButton';
 import { cn, Divider } from '@heroui/react';
 

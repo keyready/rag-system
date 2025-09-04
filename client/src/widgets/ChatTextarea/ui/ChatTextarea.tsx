@@ -19,7 +19,8 @@ export const ChatTextarea = ({ className, sendMessage, isLLMThinking, readyState
 	const [contextLength, setContextLength] = useState<number>(3);
 
 	useEffect(() => {
-		if (readyState === 3) toast(`Не удается установить соединение с сервером`);
+		if (readyState === 3) toast.error(`Не удается установить соединение с сервером`);
+		if (readyState === 1) toast.success(`Соединение с сервером установлено`);
 	}, [readyState]);
 
 	const handleSendMessage = useCallback(() => {

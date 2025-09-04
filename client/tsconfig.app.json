@@ -15,6 +15,7 @@
 			"@/shared/*": ["shared/*"],
 			"@/widgets/*": ["widgets/*"],
 			"@/entities/*": ["entities/*"],
+			"@/features/*": ["features/*"],
 			"@/icons/*": ["shared/assets/icons/*"]
 		},
 
