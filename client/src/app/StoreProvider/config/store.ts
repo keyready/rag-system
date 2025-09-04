@@ -2,6 +2,7 @@ import type { ReducersMapObject } from '@reduxjs/toolkit';
 
 import type { ReduxStoreWithManager, StateSchema } from './StateSchema';
 
+import { chatReducer } from '@/entities/Chat';
 import { userReducer } from '@/entities/User';
 import { $api } from '@/shared/config/api/api';
 import { rtkApi } from '@/shared/config/api/rtkApi';
@@ -10,11 +11,15 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import { createReducerManager } from './reducerManager';
 
-export function CreateReduxStore(initialState?: StateSchema, lazyReducers?: ReducersMapObject<StateSchema>) {
+export function CreateReduxStore(
+	initialState?: StateSchema,
+	lazyReducers?: ReducersMapObject<StateSchema>,
+) {
 	const rootReducers: ReducersMapObject<StateSchema> = {
 		...lazyReducers,
 		navigationGuard: navigationBlockerReducer,
 		user: userReducer,
+		chat: chatReducer,
 
 		[rtkApi.reducerPath]: rtkApi.reducer,
 	};

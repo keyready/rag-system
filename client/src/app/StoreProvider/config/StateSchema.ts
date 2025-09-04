@@ -1,6 +1,12 @@
+import type { ChatSchema } from '@/entities/Chat';
 import type { UserSchema } from '@/entities/User';
 import type { NavigationGuardSchema } from '@/widgets/NavigationBlocker';
-import type { EnhancedStore, Reducer, ReducersMapObject, UnknownAction } from '@reduxjs/toolkit';
+import type {
+	EnhancedStore,
+	Reducer,
+	ReducersMapObject,
+	UnknownAction,
+} from '@reduxjs/toolkit';
 import type { AxiosInstance } from 'axios';
 
 import { rtkApi } from '@/shared/config/api/rtkApi';
@@ -8,6 +14,7 @@ import { rtkApi } from '@/shared/config/api/rtkApi';
 export interface StateSchema {
 	navigationGuard: NavigationGuardSchema;
 	user: UserSchema;
+	chat: ChatSchema;
 
 	[rtkApi.reducerPath]: ReturnType<typeof rtkApi.reducer>;
 }
@@ -16,7 +23,10 @@ export type StateSchemaKey = keyof StateSchema;
 export type MountedReducers = OptionalRecord<StateSchemaKey, boolean>;
 export interface reducerManager {
 	getReducerMap: () => ReducersMapObject<StateSchema>;
-	reduce: (state: StateSchema | undefined, action: UnknownAction) => StateSchema;
+	reduce: (
+		state: StateSchema | undefined,
+		action: UnknownAction,
+	) => StateSchema;
 	add: (key: StateSchemaKey, reducer: Reducer) => void;
 	remove: (key: StateSchemaKey) => void;
 	getMountedReducers: () => MountedReducers;

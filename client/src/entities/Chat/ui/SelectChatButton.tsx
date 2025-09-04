@@ -2,13 +2,27 @@ import type { KeyboardEvent } from 'react';
 
 import type { Chat } from '../model/types/ChatsList';
 
+import { deleteChat } from '@/entities/Chat/model/services/deleteChat';
 import { RoutePath } from '@/shared/config/RouteConfig';
 import { TooltipButton } from '@/shared/ui/TooltipButton';
+import { useAppDispatch } from '@/shared/utils/useAppDispatch';
 import { cn, Spinner } from '@heroui/react';
-import { RiCheckDoubleLine, RiDeleteBin2Line, RiEdit2Line } from '@remixicon/react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+	RiCheckDoubleLine,
+	RiCloseCircleLine,
+	RiDeleteBin2Line,
+	RiEdit2Line,
+} from '@remixicon/react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
+
+import {
+	getIsChatDeleting,
+	getIsChatTitleChanging,
+} from '../model/selectors/getChatSelector';
+import { changeChatTitle } from '../model/services/changeChatTitle';
 
 interface SelectChatButtonProps {
 	chat: Chat;
@@ -18,10 +32,17 @@ export const SelectChatButton = ({ chat }: SelectChatButtonProps) => {
 	const navigate = useNavigate();
 	const inputRef = useRef<HTMLInputElement>(null);
 	const containerRef = useRef<HTMLDivElement>(null);
+	const dispatch = useAppDispatch();
+
+	const isChatTitleLoading = useSelector(getIsChatTitleChanging);
+	const isChatDeleting = useSelector(getIsChatDeleting);
 
 	const [isChatNameEditing, setIsChatNameEditing] = useState<boolean>(false);
 	const [chatTitle, setChatTitle] = useState<string>(chat.title);
-	const [isChatTitleLoading, setIsChatTitleLoading] = useState<boolean>(false);
+
+	const isTitlesDiffer = useMemo(() => {
+		return chat.title !== chatTitle;
+	}, [chat.title, chatTitle]);
 
 	const handleChatClick = useCallback(
 		(chatId: string) => {
@@ -31,34 +52,31 @@ export const SelectChatButton = ({ chat }: SelectChatButtonProps) => {
 	);
 
 	const handleDeleteChat = useCallback(() => {
-		toast.success('Удалил чат');
-	}, []);
+		dispatch(deleteChat(chat.chat_id));
+	}, [dispatch, chat.chat_id]);
 
 	const handleSaveChanges = useCallback(async () => {
 		if (chatTitle.trim() && chatTitle !== chat.title) {
-			setIsChatTitleLoading(true);
+			const result = await dispatch(
+				changeChatTitle({ chatId: chat.chat_id, newTitle: chatTitle }),
+			);
 
-			try {
-				await new Promise((resolve) =>
-					setTimeout(() => {
-						resolve(true);
-					}, 1000),
-				);
-
-				toast.success('Название чата изменено');
-				return true;
-			} catch (_err) {
-				toast.error('Ошибка при изменении названия чата');
-				return false;
-			} finally {
-				setIsChatTitleLoading(false);
-			}
+			if (result.meta.requestStatus === 'fulfilled') return true;
 		}
 		return false;
-	}, [chatTitle, chat.title]);
+	}, [chatTitle, chat, dispatch]);
+
+	const handleCancelEditing = useCallback(() => {
+		setChatTitle(chat.title);
+		setIsChatNameEditing(false);
+		toast('Отмена изменений названия чата');
+	}, [chat.title]);
 
 	const handleChangeRenameMode = useCallback(async () => {
 		if (isChatNameEditing) {
+			if (!isTitlesDiffer) {
+				handleCancelEditing();
+			}
 			const success = await handleSaveChanges();
 			if (success) {
 				setIsChatNameEditing(false);
@@ -70,13 +88,12 @@ export const SelectChatButton = ({ chat }: SelectChatButtonProps) => {
 				inputRef.current?.select();
 			}, 0);
 		}
-	}, [isChatNameEditing, handleSaveChanges]);
-
-	const handleCancelEditing = useCallback(() => {
-		setChatTitle(chat.title);
-		setIsChatNameEditing(false);
-		toast('Отмена изменений названия чата');
-	}, [chat.title]);
+	}, [
+		isChatNameEditing,
+		handleSaveChanges,
+		isTitlesDiffer,
+		handleCancelEditing,
+	]);
 
 	const handleInputKeyDown = useCallback(
 		async (e: KeyboardEvent<HTMLInputElement>) => {
@@ -118,10 +135,7 @@ export const SelectChatButton = ({ chat }: SelectChatButtonProps) => {
 				!containerRef.current.contains(event.target as Node)
 			) {
 				if (!isChatTitleLoading) {
-					const success = await handleSaveChanges();
-					if (success) {
-						setIsChatNameEditing(false);
-					}
+					handleCancelEditing();
 				}
 			}
 		};
@@ -133,7 +147,12 @@ export const SelectChatButton = ({ chat }: SelectChatButtonProps) => {
 		return () => {
 			document.removeEventListener('mousedown', handleClickOutside);
 		};
-	}, [isChatNameEditing, handleSaveChanges, isChatTitleLoading]);
+	}, [
+		isChatNameEditing,
+		handleSaveChanges,
+		handleCancelEditing,
+		isChatTitleLoading,
+	]);
 
 	const renderEditButton = () => (
 		<button
@@ -144,8 +163,10 @@ export const SelectChatButton = ({ chat }: SelectChatButtonProps) => {
 			{isChatNameEditing ? (
 				isChatTitleLoading ? (
 					<Spinner size="sm" />
-				) : (
+				) : isTitlesDiffer ? (
 					<RiCheckDoubleLine size={16} className="text-success" />
+				) : (
+					<RiCloseCircleLine size={16} className="text-danger" />
 				)
 			) : isChatTitleLoading ? (
 				<Spinner size="sm" />
@@ -160,8 +181,17 @@ export const SelectChatButton = ({ chat }: SelectChatButtonProps) => {
 			<TooltipButton
 				tooltips={
 					<div className="flex flex-row-reverse gap-1">
-						<button onClick={handleDeleteChat} className="cursor-pointer">
-							<RiDeleteBin2Line className="text-danger opacity-70" size={16} />
+						<button
+							onClick={handleDeleteChat}
+							className="cursor-pointer"
+						>
+							<RiDeleteBin2Line
+								className={cn(
+									isChatDeleting && 'opacity-20',
+									'text-danger opacity-70',
+								)}
+								size={16}
+							/>
 						</button>
 						{renderEditButton()}
 					</div>

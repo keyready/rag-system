@@ -3,6 +3,11 @@ export interface Chat {
 	title: string;
 }
 
+export interface ChatSchema {
+	isTitleChanging: boolean;
+	isChatDeleting: boolean;
+}
+
 export type SearchModes = 'ai' | 'machine';
 
 export interface ChatSearchParams {
