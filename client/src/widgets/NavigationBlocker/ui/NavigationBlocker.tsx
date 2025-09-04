@@ -1,5 +1,3 @@
-import type { FormEvent } from 'react';
-
 import {
 	Button,
 	Modal,
@@ -8,7 +6,7 @@ import {
 	ModalFooter,
 	ModalHeader,
 } from '@heroui/react';
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useBlocker } from 'react-router';
 
@@ -38,15 +36,6 @@ export const NavigationBlocker = () => {
 		return () => window.removeEventListener('beforeunload', handler);
 	}, [enabled, message]);
 
-	const handleNavigationSubmit = useCallback(
-		(ev: FormEvent<HTMLFormElement>) => {
-			ev.preventDefault();
-
-			blocker.proceed?.();
-		},
-		[],
-	);
-
 	return (
 		<Modal
 			isOpen={blocker.state === 'blocked'}
@@ -63,10 +52,7 @@ export const NavigationBlocker = () => {
 					</p>
 				</ModalBody>
 				<ModalFooter>
-					<form
-						className="flex gap-2"
-						onSubmit={handleNavigationSubmit}
-					>
+					<div className="flex gap-2">
 						<Button
 							color="success"
 							variant="light"
@@ -74,10 +60,13 @@ export const NavigationBlocker = () => {
 						>
 							Остаться
 						</Button>
-						<Button autoFocus color="danger" type="submit">
+						<Button
+							onPress={() => blocker.proceed?.()}
+							color="danger"
+						>
 							Перейти
 						</Button>
-					</form>
+					</div>
 				</ModalFooter>
 			</ModalContent>
 		</Modal>

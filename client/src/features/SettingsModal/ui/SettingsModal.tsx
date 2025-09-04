@@ -1,10 +1,24 @@
 import { NameChange, PasswordChange } from '@/entities/User';
 import { FontSwitcher } from '@/widgets/FontSwitcher';
+import { NavigationBlockerSettings } from '@/widgets/NavigationBlocker';
 import { SendMessageHotkey } from '@/widgets/SendMessageHotkey';
 import { ThemeSwitcher } from '@/widgets/ThemeSwitcher';
-import { Modal, ModalBody, ModalContent, ModalHeader, Tab, Tabs } from '@heroui/react';
+import {
+	Modal,
+	ModalBody,
+	ModalContent,
+	ModalHeader,
+	Tab,
+	Tabs,
+} from '@heroui/react';
 
-export const SettingsModal = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: (state: boolean) => void }) => {
+export const SettingsModal = ({
+	isOpen,
+	setIsOpen,
+}: {
+	isOpen: boolean;
+	setIsOpen: (state: boolean) => void;
+}) => {
 	return (
 		<Modal
 			size="2xl"
@@ -31,6 +45,7 @@ export const SettingsModal = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpe
 								<ThemeSwitcher />
 								<SendMessageHotkey />
 								<FontSwitcher />
+								<NavigationBlockerSettings />
 							</div>
 						</Tab>
 						<Tab className="w-full" title="Аккаунт">
@@ -41,12 +56,16 @@ export const SettingsModal = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpe
 						</Tab>
 						<Tab className="w-full" title="О программе">
 							<p className="indent-4">
-								Добро пожаловать на мой сайт, где ты можешь общаться со мной, задавать вопросы, получать информацию и просто
-								поболтать. Я - большая языковая модель, и я здесь, чтобы помочь тебе с любой задачей, требующей интеллекта и общения.
+								Добро пожаловать на мой сайт, где ты можешь
+								общаться со мной, задавать вопросы, получать
+								информацию и просто поболтать. Я - большая
+								языковая модель, и я здесь, чтобы помочь тебе с
+								любой задачей, требующей интеллекта и общения.
 							</p>
 							<p className="indent-4">
-								Не стесняйся, спрашивай, предлагай темы для обсуждения, и вместе мы можем узнать что-то новое или просто приятно
-								провести время!
+								Не стесняйся, спрашивай, предлагай темы для
+								обсуждения, и вместе мы можем узнать что-то
+								новое или просто приятно провести время!
 							</p>
 						</Tab>
 					</Tabs>
