@@ -20,7 +20,12 @@ export const MessageBlock = (props: MessageBlockProps) => {
 				...(message.author === 'user' ? { x: 200 } : { x: -200 }),
 			}}
 			animate={{ opacity: 1, scale: 1, x: 0 }}
-			transition={{ type: 'spring', stiffness: 200, damping: 20, duration: 200 }}
+			transition={{
+				type: 'spring',
+				stiffness: 200,
+				damping: 20,
+				duration: 200,
+			}}
 			className={cn(
 				'rounded-large flex max-w-2/3 min-w-1/3 flex-col px-5 py-2',
 				message.author === 'user'
@@ -30,7 +35,7 @@ export const MessageBlock = (props: MessageBlockProps) => {
 		>
 			<p className="text-xs opacity-70">
 				{message.author === 'assistant' ? 'Чат-бот, ' : 'Вы, '}
-				{formatTime(new Date(message.createdAt))}
+				{formatTime(new Date(message?.createdAt || ''))}
 			</p>
 
 			{formatText(message.body)}
@@ -48,7 +53,11 @@ export const MessageBlock = (props: MessageBlockProps) => {
 				</Accordion>
 			) : null}
 
-			{message?.modifiedAt && <p className="self-end text-xs italic opacity-70">Изм. {formatTime(new Date(message.modifiedAt))}</p>}
+			{message?.modifiedAt && (
+				<p className="self-end text-xs italic opacity-70">
+					Изм. {formatTime(new Date(message.modifiedAt))}
+				</p>
+			)}
 		</motion.div>
 	);
 };

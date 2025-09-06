@@ -7,7 +7,8 @@ export interface ResponseMessage {
 }
 
 export interface Message {
-	createdAt: Date;
+	id: string;
+	createdAt?: Date;
 	author: MessageAuthorType;
 	body: string;
 	context?: string[];
@@ -43,4 +44,9 @@ export interface AnswerMessage {
 	contexts: string[];
 }
 
-export type WSMessageStatus = ErrorMessage | ChatCreatedMessage | ProcessingMessage | StreamMessage | AnswerMessage;
+export type WSMessageStatus =
+	| ErrorMessage
+	| ChatCreatedMessage
+	| ProcessingMessage
+	| StreamMessage
+	| AnswerMessage;
